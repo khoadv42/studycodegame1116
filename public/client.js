@@ -1,6 +1,10 @@
 const socket = io('https://typingame1119.herokuapp.com');
+// const socket = io('http://localhost:8080');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var chatText = document.getElementById('chat-text');
+var chatInput = document.getElementById('chat-input');
+var chatForm = document.getElementById('chat-form');
 var myPos = {
     x: 250,
     y: 250,
@@ -15,13 +19,26 @@ socket.on('newPos', (data) => {
         ctx.fillRect(data.bullet[i].x - 5, data.bullet[i].y - 5, 10, 10);
     }
 });
-
+socket.on('addToChat',function(data){
+    console.log(data);
+    chatText.innerHTML += '<div>'+data+'</div>';
+});
+chatForm.onsubmit = function(e){
+    e.preventDefault();
+    if(chatInput.value[0] === '/')
+        socket.emit('evalServer',chatInput.value.slice(1));
+    else 
+        socket.emit('sendMsgToServer',chatInput.value);
+    chatInput.value = '';
+}
+socket.on('evalAnswer',function(data){
+    console.log(data);
+});
 socket.on('pos', function (data) {
     myPos.x = data.x;
     myPos.y = data.y;
 });
 document.addEventListener('keydown', function (event) {
-    console.log(event.keyCode);
     if (event.keyCode == 37) {
         socket.emit('keyPress', { inputId: 'left', state: true });
     }

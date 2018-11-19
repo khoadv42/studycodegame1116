@@ -82,6 +82,7 @@ var Player = function (id) {
     return self;
 }
 Player.list = [];
+
 Player.onConnect = function (socket) {
     var player = Player(socket.id);
     socket.on('keyPress', function (data) {
@@ -159,15 +160,44 @@ Bullet.update = function () {
     }
     return pack;
 }
-
+var DEBUG = true;
 var io = require('socket.io')(serv, {});
 io.sockets.on('connection', function (socket) {
-    socket.id = Math.floor(Math.random() * 10);
+    socket.id = Math.random();
     socketId = socket.id;
     console.log('connected', socket.id);
 
     LIST_SOCKETS[socket.id] = socket;
     Player.onConnect(socket);
+
+    socket.on('sendMsgToServer',function(data){
+        console.log(socket.id,data);
+        var playerName = ("" + socket.id).slice(2,7);
+        for(var i in LIST_SOCKETS){
+            LIST_SOCKETS[i].emit('addToChat',playerName+': '+data);
+        }
+    });
+    socket.on('evalServer',function(data){
+        if(!DEBUG){
+            return;
+        }
+        try {
+            var res = eval(data);
+           
+        } catch (e) {
+            res = e.message;
+        }
+        var data2 = [];
+        for(var i in res){
+            data2.push(res[i]);
+        }
+        if(res.constructor !== Array){
+            socket.emit('evalAnswer', res);
+        }else{
+            socket.emit('evalAnswer', data2);
+        }
+        
+    });
 
     socket.on('disconnect', function () {
         console.log('disconnect', socket.id);
