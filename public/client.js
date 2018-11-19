@@ -1,4 +1,4 @@
-const socket = io(' https://typingame1119.herokuapp.com');
+const socket = io('https://typingame1119.herokuapp.com');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var myPos = {
