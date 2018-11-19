@@ -1,0 +1,25 @@
+{
+  "name": "studycodegame1116",
+  "version": "1.0.0",
+  "description": "study code node js socket io express by canvas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khoadv42/studycodegame1116.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/khoadv42/studycodegame1116/issues"
+  },
+  "homepage": "https://github.com/khoadv42/studycodegame1116#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "jquery": "^3.3.1",
+    "socket.io": "^2.1.1"
+  }
+}
