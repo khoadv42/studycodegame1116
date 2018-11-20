@@ -81,7 +81,7 @@ var Player = function (id) {
     console.log(self);
     return self;
 }
-Player.list = [];
+Player.list = {};
 
 Player.onConnect = function (socket) {
     var player = Player(socket.id);
@@ -143,7 +143,7 @@ var Bullet = function (parent, angle) {
     Bullet.list[self.id] = self;
     return self;
 }
-Bullet.list = [];
+Bullet.list = {};
 Bullet.update = function () {
     var pack = [];
     for (let i in Bullet.list) {
@@ -160,6 +160,28 @@ Bullet.update = function () {
     }
     return pack;
 }
+var USERS = {
+    "bob":"asd",
+    "bob2":"bob",
+    "bob3":"ttt"
+}
+var isValidPassword = function(data,cb){
+    setTimeout(function(){
+        cb(USERS[data.username] === data.password);
+    },10);
+}
+var isUsernameTaken = function(data,cb){
+    setTimeout(function(){
+        cb(USERS[data.username]);
+    },10);
+}
+var addUser = function(data,cb){
+    setTimeout(function(){
+        USERS[data.username] = data.password;
+        cb();
+    },10);
+}
+
 var DEBUG = true;
 var io = require('socket.io')(serv, {});
 io.sockets.on('connection', function (socket) {
@@ -168,7 +190,6 @@ io.sockets.on('connection', function (socket) {
     console.log('connected', socket.id);
 
     LIST_SOCKETS[socket.id] = socket;
-    Player.onConnect(socket);
 
     socket.on('sendMsgToServer',function(data){
         console.log(socket.id,data);
@@ -187,15 +208,32 @@ io.sockets.on('connection', function (socket) {
         } catch (e) {
             res = e.message;
         }
-        var data2 = [];
-        for(var i in res){
-            data2.push(res[i]);
-        }
         if(res.constructor !== Array){
             socket.emit('evalAnswer', res);
         }else{
-            socket.emit('evalAnswer', data2);
+            socket.emit('evalAnswer', res);
         }
+    });
+    socket.on('signIn',function(data){
+        isValidPassword(data,function(res){
+            if(res){
+                Player.onConnect(socket);
+                socket.emit('signInResponse',{success:true});
+            }else{
+                socket.emit('signInResponse',{success:false});
+            }
+        });
+    });
+    socket.on('signUp',function(data){
+        isUsernameTaken(data,function(res){
+            if(res){
+                socket.emit('signUpResponse',{success:false});
+        }else{
+            addUser(data,function(){
+                socket.emit('signUpResponse',{success:true});
+            });
+        }
+        });
         
     });
 

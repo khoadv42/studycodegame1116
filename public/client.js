@@ -1,10 +1,18 @@
-const socket = io('https://typingame1119.herokuapp.com');
-// const socket = io('http://localhost:8080');
+// const socket = io('https://typingame1119.herokuapp.com');
+const socket = io('http://localhost:8080');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var chatText = document.getElementById('chat-text');
 var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
+
+var signDiv = document.getElementById('signDiv');
+var signDivUsername = document.getElementById('signDiv-username');
+var signDivSignIn = document.getElementById('signDiv-signIn');
+var signDivSignUp = document.getElementById('signDiv-signUp');
+var signDivPassword = document.getElementById('signDiv-password');
+
+
 var myPos = {
     x: 250,
     y: 250,
@@ -38,6 +46,29 @@ socket.on('pos', function (data) {
     myPos.x = data.x;
     myPos.y = data.y;
 });
+
+signDivSignIn.onclick = function(){
+    socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+}
+signDivSignUp.onclick = function(){
+    socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
+}
+socket.on('signInResponse',function(data){
+    if(data.success){
+        signDiv.style.display = 'none';
+        gameDiv.style.display = 'inline-block';
+    }else{
+        alert("Sign in unsuccessul.");
+    }
+});
+socket.on('signUpResponse',function(data){
+    if(data.success){
+        alert("Sign in successul.");
+    }else{
+        alert("Sign in unsuccessul.");
+    }
+});
+
 document.addEventListener('keydown', function (event) {
     if (event.keyCode == 37) {
         socket.emit('keyPress', { inputId: 'left', state: true });

@@ -7,16 +7,31 @@
                 border:1px solid #0c920c;
                 font-size: 30px;
             }
+            #signDiv{
+                display: inline-block;
+            }
+            #gameDiv{
+                display: none;
+            }
         </style>
     </head>
     <body>
-        <canvas id="canvas" width="500" height="500"></canvas>
-        <div id="chat-text" style="width:500px;height:100px;overflow-y: scroll;">
-            <div>Hello!</div>
+        <div id="signDiv">
+            Username: <input type="text" id="signDiv-username"/>
+            Password: <input type="password" id="signDiv-password"/>
+            <button id="signDiv-signIn">Sign In</button>
+            <button id="signDiv-signUp">Sign Up</button>
         </div>
-        <form id="chat-form">
-            <input type="text" id="chat-input" style="width:500px;">
-        </form>
+        <div id="gameDiv">
+            <canvas id="canvas" width="500" height="500"></canvas>
+            <div id="chat-text" style="width:500px;height:100px;overflow-y: scroll;">
+                <div>Hello!</div>
+            </div>
+            <form id="chat-form">
+                <input type="text" id="chat-input" style="width:500px;">
+            </form>
+        </div>
+
         <script src="../public/client.js"></script>
     </body>
 </html>
